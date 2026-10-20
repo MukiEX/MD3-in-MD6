@@ -1,0 +1,10 @@
+bin/
+obj/
+dist/
+*.user
+Directory.Build.props.user
+# Game files and ROMs never go in this repo
+Assembly-CSharp*.dll
+UnityEngine*.dll
+*.neo
+*.bin

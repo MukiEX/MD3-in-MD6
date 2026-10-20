@@ -1,0 +1,8 @@
+<!-- Copy to Directory.Build.props.user (git-ignored) and set your install path. -->
+<Project>
+  <PropertyGroup>
+    <GameDir>D:\SteamLibrary\steamapps\common\Magical Drop VI</GameDir>
+    <!-- Optional, if the *_Data folder can't be found automatically: -->
+    <!-- <ManagedDir>$(GameDir)\MagicalDropVI_Data\Managed</ManagedDir> -->
+  </PropertyGroup>
+</Project>

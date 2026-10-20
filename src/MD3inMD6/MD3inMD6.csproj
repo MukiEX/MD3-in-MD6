@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>MD3inMD6</AssemblyName>
+    <RootNamespace>MD3inMD6</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Pete</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <LangVersion>7.3</LangVersion>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <!--
+    Point GameDir at your Magical Drop VI install, either here, on the command line
+    (dotnet build -p:GameDir="D:\Games\Magical Drop VI") or in Directory.Build.props.user.
+    The game's own DLLs are referenced from there and are never copied into the repo.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Directory.Build.props.user" Condition="Exists('$(MSBuildThisFileDirectory)..\..\Directory.Build.props.user')" />
+
+  <PropertyGroup>
+    <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Magical Drop VI</GameDir>
+    <ManagedDir Condition="'$(ManagedDir)' == '' and Exists('$(GameDir)')">$([System.IO.Directory]::GetDirectories('$(GameDir)', '*_Data')[0])\Managed</ManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp"><HintPath>$(ManagedDir)\Assembly-CSharp.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>$(ManagedDir)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <!-- Copy the built plugin into the game's BepInEx/plugins folder when it exists. -->
+  <Target Name="CopyToGame" AfterTargets="Build" Condition="Exists('$(GameDir)\BepInEx\plugins')">
+    <MakeDir Directories="$(GameDir)\BepInEx\plugins\MD3-in-MD6" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins\MD3-in-MD6" />
+  </Target>
+
+</Project>
